@@ -1,0 +1,25 @@
+{
+  "name": "net-core-template",
+  "version": "1.0.0",
+  "description": ".NET Core Template for ASP.NET MVC",
+  "main": "-",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/niklascp/NETCoreTemplate.git"
+  },
+  "author": "Niklas Christoffer Petersen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/niklascp/NETCoreTemplate/issues"
+  },
+  "homepage": "https://github.com/niklascp/NETCoreTemplate#readme",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-less": "^3.0.3",
+    "gulp-minify-css": "^1.2.1",
+    "gulp-rename": "^1.2.2"
+  }
+}
