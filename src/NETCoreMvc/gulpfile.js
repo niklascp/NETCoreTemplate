@@ -1,24 +1,31 @@
-/// <binding BeforeBuild='styles' />
+/// <binding BeforeBuild='css' />
 var fs = require('fs');
 var gulp = require('gulp');
+var sass = require('gulp-ruby-sass');
 var less = require('gulp-less');
 var minifyCSS = require('gulp-minify-css');
 var rename = require("gulp-rename");
 
 var path = require('path');
 
-var script_root = './wwwroot/vendor/'
+var config = {
+    bowerRoot: './bower_components/',
+    vendorRoot: './wwwroot/vendor/',
+    resourcesRoot: './wwwroot/resources/'
+};
 
-gulp.task('bower-ui-select', function() {
-  gulp
-    .src('./bower_components/ui-select/dist/*.js')
-    .pipe(gulp.dest(script_root + 'ui-select/js/'))
-  gulp
-    .src('./bower_components/ui-select/dist/*.css')
-    .pipe(gulp.dest(script_root + 'ui-select/css/'))
-  gulp
-    .src(['./bower_components/ui-select/README.md', './bower_components/ui-select/LICENSE'])
-    .pipe(gulp.dest(script_root + 'ui-select/'))
+var script_root = './wwwroot/vendor/';
+
+gulp.task('bower-ui-select', function () {
+    gulp
+      .src('./bower_components/ui-select/dist/*.js')
+      .pipe(gulp.dest(script_root + 'ui-select/js/'))
+    gulp
+      .src('./bower_components/ui-select/dist/*.css')
+      .pipe(gulp.dest(script_root + 'ui-select/css/'))
+    gulp
+      .src(['./bower_components/ui-select/README.md', './bower_components/ui-select/LICENSE'])
+      .pipe(gulp.dest(script_root + 'ui-select/'))
 });
 
 gulp.task('selectize', function () {
@@ -43,38 +50,22 @@ gulp.task('jquery', function () {
 });
 
 gulp.task('bootstrap', function () {
-
     gulp
-        .src('./bower_components/bootstrap/dist/js/*.js', '!**/npm.js')
+        .src([config.bowerRoot + '/bootstrap-sass/assets/javascripts/*.js', '!**/bootstrap-sprockets.js'])
         .pipe(gulp.dest(script_root + 'bootstrap/js/'));
 
-    gulp
-        .src(['./bower_components/bootstrap/less/**/*', '!**/variables.less'])
-        .pipe(gulp.dest(script_root + 'bootstrap/less/'));
-
-    if (!fs.existsSync(script_root+ 'bootstrap/less/variables.less'))
-        gulp
-            .src(['./bower_components/bootstrap/less/variables.less'])
-            .pipe(gulp.dest(script_root + 'bootstrap/less/'));
-
-    gulp.src('./bower_components/bootstrap/dist/fonts/*')
+    gulp.src(config.bowerRoot + '/bootstrap-sass/assets/fonts/bootstrap/*')
         .pipe(gulp.dest(script_root + 'bootstrap/fonts/'));
-    
-    return gulp.src(path.join(script_root, 'bootstrap/less/bootstrap.less'))
-        .pipe(less())
-        .pipe(gulp.dest(script_root + 'bootstrap/css/'))
-        .pipe(minifyCSS())
-        .pipe(rename('bootstrap.min.css'))
-        .pipe(gulp.dest(script_root + 'bootstrap/css/'))
- });
+});
 
-gulp.task('styles', function () {
-
-    return gulp.src(path.join(script_root, 'stylesheet.less'))
-        .pipe(less())
-        .pipe(gulp.dest(script_root))
-        .pipe(minifyCSS())
-        .pipe(rename('stylesheet.min.css'))
-        .pipe(gulp.dest(script_root))
-
+gulp.task('css', function () {
+    return sass(config.resourcesRoot + 'scss/style.scss', {
+        style: 'compressed',
+        loadPath: [
+            //config.resourcesRoot + 'scss',
+            config.bowerRoot + '/bootstrap-sass/assets/stylesheets'
+        ]
+    })
+    .on('error', sass.logError)
+    .pipe(gulp.dest(config.resourcesRoot + 'css'))
 });
